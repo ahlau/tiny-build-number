@@ -12,13 +12,11 @@ apiRouter.get('/read', async (req, res) => {
       try {
         const build = await BuildNumber.findOne({'bundle_id': bundleId});
         if(build === null) {
-          console.log("buildNumber returned null", bundleId);
           res.status(404).send();
         } else {
           res.send({number: build.number});
         }
       } catch(e) {
-        console.log(e);
         res.status(404).send(e);
       }
     }
@@ -29,7 +27,6 @@ apiRouter.get('/read', async (req, res) => {
     let number = body.number;
 
     if((typeof(bundle_id) === "undefined") || (typeof(number) === "undefined")) {
-      console.log("params", req.params);
       res.status(400).send();
       return;
     }
@@ -49,6 +46,32 @@ apiRouter.get('/read', async (req, res) => {
         res.status(400)
       }
 
+      await build.save();
+    } catch(e) {
+      res.status(400).send(e);
+    }
+    res.send();
+  })
+  .post('/bump', async (req, res) => {
+    let body = _.pick(req.body, ['bundle_id'])
+    let bundle_id = body.bundle_id;
+
+    if(typeof(bundle_id) === "undefined") {
+      res.status(400).send();
+      return;
+    }
+    try {
+      let build = await BuildNumber.findOne({ bundle_id });
+      if (!build) {
+        //create build
+        build = new BuildNumber({bundle_id, number: 0});
+        res.status(200);
+      } else {
+        // biz logic: only assign new number if it's greater than existing
+        // number
+        build.number++;
+        res.status(200);
+      }
       await build.save();
     } catch(e) {
       res.status(400).send(e);

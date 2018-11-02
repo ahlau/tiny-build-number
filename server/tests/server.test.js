@@ -132,4 +132,71 @@ describe('POST /api/set', (done) => {
 
 });
 
+describe('POST /api/bump', (done) => {
+  it("should create new bundle_id if it doesn't already exist", (done) => {
+    let newBundleId = "com.ultimatequestion.fourtytwo";
+    BuildNumber.find({bundle_id: newBundleId}).then((builds) => {
+      expect(builds).toEqual([]);
+    }).catch((e) => {
+      done(e);
+    });
+
+    request(app)
+      .post('/api/bump')
+      .send({bundle_id: newBundleId})
+      .expect(200)
+      .end((err, res) => {
+        if(err) {
+          return done(err);
+        }
+        expect((res) => {
+          expect(res.body.number).toBe(0);
+        });
+
+        BuildNumber.find({bundle_id: newBundleId})
+          .then((builds) => {
+            expect(builds.length).toBe(1);
+            expect(builds[0].number).toBe(0);
+            done();
+          }).catch((e) => done(e));
+      });
+  });
+
+  it("should increment existing number if bundle_id already exists", (done) => {
+    let bundle_id = buildNumbers[2].bundle_id;
+    let number = buildNumbers[2].number;
+
+    // check DB to ensure we have the values we expect
+    BuildNumber.find({bundle_id}).then((builds) => {
+      expect(builds.length).toBe(1);
+    }).catch((e) => {
+      done(e);
+    });
+
+    // do request to api/bump
+    request(app)
+      .post('/api/bump')
+      .send({bundle_id})
+      .expect(200)
+      .end((err, res) => {
+        if(err) {
+          return done(err);
+        }
+        expect((res) => {
+          // verify that result is returned in response
+          expect(res.body.number).toBe(number+1);
+        });
+
+        // Check that DB was updated
+        BuildNumber.find({bundle_id})
+          .then((builds) => {
+            expect(builds.length).toBe(1);
+            expect(builds[0].number).toBe(number+1);
+            done();
+          }).catch((e) => done(e));
+      });
+  });
+
+});
+
 // INDEX on build numbers?
