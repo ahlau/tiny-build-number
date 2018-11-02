@@ -33,7 +33,7 @@ apiRouter.get('/read', async (req, res) => {
       res.status(400).send();
     }
     try {
-      let build = await BuildNumber.findOne({ bundle_id, number});
+      let build = await BuildNumber.findOne({ bundle_id });
       if (!build) {
         //create build
         build = new BuildNumber({bundle_id, number});
