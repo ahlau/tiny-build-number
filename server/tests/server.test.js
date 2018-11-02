@@ -103,7 +103,32 @@ describe('POST /api/set', (done) => {
       });
   }); // request
 
-  it("should return status 400 if missing params");
+  it("should return status 400 if missing params", (done) => {
+      BuildNumber.find({bundle_id: buildNumbers[2].bundle_id}).then((builds) => {
+        expect(builds).toExist()
+        expect(builds.length).toBe(1);
+      }).catch((e) => {
+        done(e);
+      });
+    request(app)
+      .post('/api/set')
+      .expect(400)
+      .end(done);
+  });
+
+  it("should return status 400 with bad params", (done) => {
+      BuildNumber.find({bundle_id: buildNumbers[2].bundle_id}).then((builds) => {
+        expect(builds).toExist()
+        expect(builds.length).toBe(1);
+      }).catch((e) => {
+        done(e);
+      });
+    request(app)
+      .post('/api/set')
+      .send({bundle_id: buildNumbers[2].bundle_id})
+      .expect(400)
+      .end(done);
+  });
 
 });
 

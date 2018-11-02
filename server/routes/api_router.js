@@ -31,6 +31,7 @@ apiRouter.get('/read', async (req, res) => {
     if((typeof(bundle_id) === "undefined") || (typeof(number) === "undefined")) {
       console.log("params", req.params);
       res.status(400).send();
+      return;
     }
     try {
       let build = await BuildNumber.findOne({ bundle_id });
