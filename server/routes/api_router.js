@@ -33,11 +33,26 @@ apiRouter.get('/read', async (req, res) => {
       res.status(400).send();
     }
     try {
-      let result = await BuildNumber.findOneAndUpdate({ bundle_id }, { number }, { upsert: true });
+      let build = await BuildNumber.findOne({ bundle_id, number});
+      if (!build) {
+        //create build
+        build = new BuildNumber({bundle_id, number});
+        res.status(200)
+      } else if (number > build.number) {
+        // biz logic: only assign new number if it's greater than existing
+        // number
+        build.number = number;
+        res.status(200)
+      } else {
+        // existing number is >= new number so return 400
+        res.status(400)
+      }
+
+      await build.save();
     } catch(e) {
       res.status(400).send(e);
     }
-    res.status(200).send();
+    res.send();
   });
 
 module.exports = apiRouter;

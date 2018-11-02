@@ -58,9 +58,53 @@ describe('POST /api/set', (done) => {
         if(err) {
           return done(err);
         }
-        done();
+        BuildNumber.find({bundle_id: "com.empirestrikes.back"})
+          .then((builds) => {
+            expect(builds.length).toBe(1);
+            expect(builds[0].number).toBe(40);
+            done();
+          }).catch((e) => done(e));
       });
   });
 
+  it("should not overwrite existing value if number param < old number", (done) => {
+    let existingBuild = buildNumbers[0]
+    request(app)
+      .post('/api/set')
+      .send({bundle_id: existingBuild.bundle_id, number: existingBuild.number-1})
+      .expect(400)
+      .end((err, res) => {
+        if(err) {
+          return done(err);
+        }
+        BuildNumber.find({bundle_id: existingBuild.bundle_id}).then((builds) => {
+          expect(builds.length).toBe(1);
+          expect(builds[0].number).toBe(existingBuild.number);
+          done();
+          }).catch((e) => done(e));
+        });
+  }); // request
+
+/*
+  it("should overwrite existing value if number param > old number", (done) => {
+    let existingBuild = buildNumbers[0]
+    request(app)
+      .post('/api/set')
+      .send({bundle_id: existingBuild.bundle_id, number: existingBuild.number+1})
+      .expect(200)
+      .end( async (err, res) => {
+        if(err) {
+          return done(err);
+        }
+        let builds = await BuildNumber.find({bundle_id: existingBuild.bundle_id})
+        expect(builds.length).toBe(1);
+        expect(builds[0].number).toBe(existingBuild.number+1);
+        done();
+      }).catch((e) => done(e));
+  }); // request
+*/
+  it("should return status 400 if missing params");
+
 });
+
 // INDEX on build numbers?
