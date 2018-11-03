@@ -1,14 +1,25 @@
 # tiny-build-number
 A webservice that tracks iOS builds given a bundle_id written in NodeJS.
 
-# Start
-
-To start run:
+# Install
 ```
 git clone git@github.com:ahlau/tiny-build-number.git
 cd tiny-build-number
 npm install
+```
+
+Ensure MongoDB is available. For *development* and *test*, default configurations are stored in `server/config/config.json`. These can be overwritten using the environment variables `PORT` and `MONGODB_URI`
+
+
+# Start
+
+To start run the following in the app's root directory:
+```
 pm2 start server/server.js
+```
+Or with custom environment vars:
+```
+PORT=8080 MONGODB_URI=https://example.com/my_mongo_db pm2 start server/server.js
 ```
 
 To run tests:
