@@ -1,3 +1,4 @@
+// Use Mongoose for our DB
 var mongoose = require('mongoose');
 
 mongoose.Promise = global.Promise;

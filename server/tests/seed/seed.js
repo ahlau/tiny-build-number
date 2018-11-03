@@ -1,3 +1,7 @@
+// SEED
+//
+// Create seed data for our tests.
+//
 const {ObjectID} = require('mongodb');
 const {BuildNumber} = require('./../../models/build_number');
 

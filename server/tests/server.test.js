@@ -5,6 +5,7 @@ const {BuildNumber} = require('./../models/build_number');
 const {app} = require("./../app");
 const {buildNumbers, populateBuildNumbers } = require('./seed/seed');
 
+// Reset the test DB a seeded DB before each test
 beforeEach(populateBuildNumbers);
 
 describe('GET /api/read', (done) => {
@@ -26,7 +27,7 @@ describe('GET /api/read', (done) => {
   it("should not return a build number when bundle_id not provided", (done) => {
     request(app)
       .get(`/api/read`)
-      .expect(404)
+      .expect(400)
       .end((err, res) => {
         if(err) {
           return done(err);

@@ -1,3 +1,9 @@
+// app.js
+//
+// Application specific libraries here
+// Extracted out from server.js so that we can isolate this for testing without
+// starting up a server and conflicting with our test environment
+
 const config = require('./config/config');
 const express = require('express');
 const bodyParser = require('body-parser');

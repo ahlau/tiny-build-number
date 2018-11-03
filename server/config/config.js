@@ -1,6 +1,7 @@
+// Load configs when the NODE_ENV is development or test
 var env = process.env.NODE_ENV || 'development';
-console.log("****", env);
 
+// For production environments use environment variables directly.
 if (env === 'development' || env === 'test') {
   var config = require('./config.json');
   var envConfig = config[env];

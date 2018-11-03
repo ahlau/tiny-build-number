@@ -1,3 +1,4 @@
+// Define our Build Number schema for Mongoose
 const mongoose = require('mongoose');
 
 var BuildNumberSchema = new mongoose.Schema({
