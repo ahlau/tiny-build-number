@@ -34,7 +34,7 @@ apiRouter.get('/read', async (req, res) => {
       let build = await BuildNumber.findOne({ bundle_id });
       if (!build) {
         //create build
-        build = new BuildNumber({bundle_id, number});
+        build = new BuildNumber({bundle_id, number: 0});
         res.status(200)
       } else if (number > build.number) {
         // biz logic: only assign new number if it's greater than existing

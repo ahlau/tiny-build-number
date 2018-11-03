@@ -49,7 +49,7 @@ describe('GET /api/read', (done) => {
 });
 
 describe('POST /api/set', (done) => {
-  it("should return success code given a new bundle_id", (done) => {
+  it("should return success code and set build number to 0 given a new bundle_id", (done) => {
     request(app)
       .post('/api/set')
       .send({bundle_id: 'com.empirestrikes.back', number: 40})
@@ -61,7 +61,7 @@ describe('POST /api/set', (done) => {
         BuildNumber.find({bundle_id: "com.empirestrikes.back"})
           .then((builds) => {
             expect(builds.length).toBe(1);
-            expect(builds[0].number).toBe(40);
+            expect(builds[0].number).toBe(0);
             done();
           }).catch((e) => done(e));
       });
@@ -133,7 +133,7 @@ describe('POST /api/set', (done) => {
 });
 
 describe('POST /api/bump', (done) => {
-  it("should create new bundle_id if it doesn't already exist", (done) => {
+  it("should create new bundle_id with build number 0 when build doesn't exist", (done) => {
     let newBundleId = "com.ultimatequestion.fourtytwo";
     BuildNumber.find({bundle_id: newBundleId}).then((builds) => {
       expect(builds).toEqual([]);
