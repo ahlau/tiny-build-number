@@ -14,7 +14,7 @@ apiRouter.get('/read', async (req, res) => {
         if(build === null) {
           res.status(404).send();
         } else {
-          res.send({number: build.number});
+          res.send({bundle_id: build.bundleId , number: build.number});
         }
       } catch(e) {
         res.status(404).send(e);
