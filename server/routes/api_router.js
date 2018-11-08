@@ -12,9 +12,10 @@ const {BuildNumber} = require('../models/build_number');
 //  Otherwise return a 404 response status.
 apiRouter.get('/read', async (req, res) => {
     let bundleId = req.query.bundle_id;
-
+    console.log(req.query);
     if (typeof(bundleId) === "undefined") {
       // Return a BAD Request
+      console.log("No bundleId");
       res.status(400).send();
     } else {
       try {
@@ -22,13 +23,16 @@ apiRouter.get('/read', async (req, res) => {
         const build = await BuildNumber.findOne({'bundle_id': bundleId});
         if(build === null) {
           // Return 404 if build with bundle_id not found
+          console.log("No build found");
           res.status(404).send();
         } else {
           // Found, return the bundle_id and build_number as an object
           // We could just send back the number but JSON is more readable
+          console.log("Data found!");
           res.send({bundle_id: build.bundleId , number: build.number});
         }
       } catch(e) {
+        console.log(e);
         res.status(404).send(e);
       }
     }
@@ -54,14 +58,17 @@ apiRouter.get('/read', async (req, res) => {
       if (!build) {
         //create a BuildNumber if we can't find one
         build = new BuildNumber({bundle_id, number: 0});
+        console.log("SET new build created")
         res.status(200);
       } else if (number > build.number) {
         // biz logic: only assign new number if it's greater than an existing
         // build's number
         build.number = number;
+        console.log("SET setting new build number " + build.number);
         res.status(200);
       } else {
         // existing number is >= new number so return 400
+        console.log("SET number must be greater than existing number");
         res.status(400).send();
         return;
       }
@@ -69,6 +76,7 @@ apiRouter.get('/read', async (req, res) => {
       await build.save();
     } catch(e) {
       // Return an error if one occurs
+      console.log(e);
       res.status(400).send(e);
     }
     // Send back the response
@@ -81,6 +89,7 @@ apiRouter.get('/read', async (req, res) => {
     let bundle_id = req.body.bundle_id;
 
     if(typeof(bundle_id) === "undefined") {
+      console.log("BUMP bundle_id undefined");
       res.status(400).send();
       return;
     }
@@ -88,17 +97,20 @@ apiRouter.get('/read', async (req, res) => {
       let build = await BuildNumber.findOne({ bundle_id });
       if (!build) {
         //create build
+        console.log("BUMP created new bundle");
         build = new BuildNumber({bundle_id, number: 0});
         res.status(200);
       } else {
         // biz logic: only assign new number if it's greater than existing
         // number
+        console.log("BUMP incrementing build number");
         build.number++;
         res.status(200);
       }
       // Save build and wait for request to complete
       await build.save();
     } catch(e) {
+      console.log(e);
       res.status(400).send(e);
       return;
     }

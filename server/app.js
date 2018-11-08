@@ -16,6 +16,7 @@ var {mongoose} = require('./db/mongoose');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(cors());
+app.use(express.static('server/public'));
 app.use('/api', apiRouter);
 
 module.exports = { app };

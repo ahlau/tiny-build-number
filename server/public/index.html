@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.2/css/bootstrap.min.css">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  </head>
+  <body>
+    <div class="container">
+      <h2>Read Form</h2>
+      <form id="readForm" action="/api/read" method="get">
+        <div class="form-group">
+          <input class="form-control" id="getBundleId" type="text" name="getBundleId" value="com.example.one" placeholder="Bundle ID"/>
+        </div>
+
+        <input id="getFormButton" class="btn btn-primary" type="submit" value="Submit">
+      </form>
+
+      <h2>Set Form</h2>
+      <form id="setForm" action="/api/set" method="post">
+        <div class="form-row">
+          <div class="col-6">
+            <input placeholder="Bundle ID" class="form-control" id="setBundleId" type="text" name="setBundleId" value="com.example.one"/>
+          </div>
+          <div class="col">
+            <input placeholder="Build number" class="form-control" id="setBuildNumber" type="number" name="setBuildNumber" value="1" />
+          </div>
+
+          <input type="submit" value="Submit" class="btn btn-primary" />
+        </div>
+      </form>
+
+      <h2>Bump Form</h2>
+      <form id="bumpForm" action="/api/bump" method="post">
+        <div class="form-group">
+          <input class="form-control" id="bumpBundleId" type="text" name="bumpBundleId" value="com.example.one" placeholder="Bundle ID"/>
+        </div>
+
+        <input id="bumpFormButton" class="btn btn-primary" type="submit" value="Submit">
+      </form>
+
+      <h2>Responses</h2>
+      <p>Server responses from each form</p>
+      <ul id="responses" class="list-group">
+      </ul>
+    </div>
+
+
+    <script>
+      $(document).ready(function() {
+
+        $("#readForm").on("submit", function(e) {
+          e.preventDefault();
+          $.get("/api/read", { bundle_id: $("#getBundleId").val() })
+            .done(function(data, status, xhr) {
+              console.log(data);
+              $("#responses").append("<li class='list-group-item'><span>GET " + status + ": " + $("#getBundleId").val() + ", " + data.number + "</span></li>");
+            })
+            .fail(function(data) {
+              $("#responses").append("<li class='error list-group-item'>GET <b>" + data.status + " - " + data.statusText +"</b></li>");
+              console.log(data);
+            });
+        });
+
+        $("#setForm").on("submit", function(e) {
+          e.preventDefault();
+          $.post("/api/set", { bundle_id: $("#setBundleId").val(), number: $("#setBuildNumber").val()})
+            .done(function(data, status, xhr) {
+              console.log(data);
+              $("#responses").append("<li class='list-group-item'><span>SET " + status + ": " + $("#setBundleId").val() + ", " + data.number + "</span></li>");
+            })
+            .fail(function(data) {
+              $("#responses").append("<li class='error list-group-item'>SET <b>" + data.status + " - " + data.statusText +"</b></li>");
+              console.log(data);
+            });
+        });
+
+        $("#bumpForm").on("submit", function(e) {
+          e.preventDefault();
+          console.log($("#bumpBundleId").val());
+          $.post("/api/bump", { bundle_id: $("#bumpBundleId").val() })
+            .done(function(data, status, xhr) {
+              console.log(data);
+              $("#responses").append("<li class='list-group-item'>BUMP " + status + "</li>");
+            })
+            .fail(function(data) {
+              $("#responses").append("<li class='list-group-item error'>BUMP <b>" + data.status + "</b></li>");
+              console.log(data);
+            });
+        });
+ 
+      });
+    </script>
+  </body>
+</html>
