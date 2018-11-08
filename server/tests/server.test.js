@@ -14,7 +14,7 @@ describe('GET /api/read', (done) => {
       .get(`/api/read?bundle_id=${buildNumbers[2].bundle_id}`)
       .expect(200)
       .expect((res) => {
-        expect(res.body).toEqual({number: buildNumbers[2].number});
+        expect(res.body).toEqual({number: buildNumbers[2].number, bundle_id: buildNumbers[2].bundle_id});
       })
       .end((err, res) => {
         if(err) {
