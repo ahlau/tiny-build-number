@@ -20,7 +20,7 @@ apiRouter.get('/read', async (req, res) => {
     } else {
       try {
         // Find a BuildNumber given the bundle_id
-        const build = await BuildNumber.findOne({'bundle_id': bundleId});
+        var build = await BuildNumber.findOne({'bundle_id': bundleId});
         if(build === null) {
           // Return 404 if build with bundle_id not found
           console.log("No build found");
@@ -29,7 +29,7 @@ apiRouter.get('/read', async (req, res) => {
           // Found, return the bundle_id and build_number as an object
           // We could just send back the number but JSON is more readable
           console.log("Data found!");
-          res.send({bundle_id: build.bundleId , number: build.number});
+          res.send({bundle_id: build.bundle_id , number: build.number});
         }
       } catch(e) {
         console.log(e);
@@ -54,7 +54,7 @@ apiRouter.get('/read', async (req, res) => {
     }
     try {
       // Lookout our BuildNumber from the Request, wait until it returns
-      let build = await BuildNumber.findOne({ bundle_id });
+      var build = await BuildNumber.findOne({ bundle_id });
       if (!build) {
         //create a BuildNumber if we can't find one
         build = new BuildNumber({bundle_id, number: 0});
@@ -80,7 +80,7 @@ apiRouter.get('/read', async (req, res) => {
       res.status(400).send(e);
     }
     // Send back the response
-    res.send();
+    res.send({bundle_id: build.bundle_id, number: build.number});
   })
   // POST /bump
   //   - increment a build number if it exists, otherwise
@@ -94,7 +94,8 @@ apiRouter.get('/read', async (req, res) => {
       return;
     }
     try {
-      let build = await BuildNumber.findOne({ bundle_id });
+      var build = await BuildNumber.findOne({ bundle_id });
+      debugger;
       if (!build) {
         //create build
         console.log("BUMP created new bundle");
@@ -114,7 +115,7 @@ apiRouter.get('/read', async (req, res) => {
       res.status(400).send(e);
       return;
     }
-    res.send();
+    res.send({bundle_id: build.bundle_id, number: build.number});
   });
 
 module.exports = apiRouter;

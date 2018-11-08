@@ -56,7 +56,7 @@
           $.get("/api/read", { bundle_id: $("#getBundleId").val() })
             .done(function(data, status, xhr) {
               console.log(data);
-              $("#responses").append("<li class='list-group-item'><span>GET " + status + ": " + $("#getBundleId").val() + ", " + data.number + "</span></li>");
+              $("#responses").append("<li class='list-group-item'><span>GET " + status + ": " + data.bundle_id + ", " + data.number + "</span></li>");
             })
             .fail(function(data) {
               $("#responses").append("<li class='error list-group-item'>GET <b>" + data.status + " - " + data.statusText +"</b></li>");
@@ -69,7 +69,7 @@
           $.post("/api/set", { bundle_id: $("#setBundleId").val(), number: $("#setBuildNumber").val()})
             .done(function(data, status, xhr) {
               console.log(data);
-              $("#responses").append("<li class='list-group-item'><span>SET " + status + ": " + $("#setBundleId").val() + ", " + data.number + "</span></li>");
+              $("#responses").append("<li class='list-group-item'><span>SET " + status + ": " + data.build_id + ", " + data.number + "</span></li>");
             })
             .fail(function(data) {
               $("#responses").append("<li class='error list-group-item'>SET <b>" + data.status + " - " + data.statusText +"</b></li>");
@@ -83,7 +83,7 @@
           $.post("/api/bump", { bundle_id: $("#bumpBundleId").val() })
             .done(function(data, status, xhr) {
               console.log(data);
-              $("#responses").append("<li class='list-group-item'>BUMP " + status + "</li>");
+              $("#responses").append("<li class='list-group-item'>BUMP " + status + ": " + data.bundle_id + ", " + data.number + "</li>");
             })
             .fail(function(data) {
               $("#responses").append("<li class='list-group-item error'>BUMP <b>" + data.status + "</b></li>");
